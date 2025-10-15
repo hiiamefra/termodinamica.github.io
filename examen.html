@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen: Leyes de la Termodinámica</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f4ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .quiz-container {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 420px;
+    max-width: 95%;
+    padding: 25px;
+  }
+  .quiz-header {
+    background: #5b2dfc;
+    color: white;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+    margin: -25px -25px 20px -25px;
+  }
+  .question {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  .options label {
+    display: block;
+    background: #f8f8ff;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .options label:hover {
+    background: #ecebff;
+    border-color: #5b2dfc;
+  }
+  .options input {
+    display: none;
+  }
+  .options input:checked + label {
+    background: #e0d4ff;
+    border-color: #5b2dfc;
+    box-shadow: 0 0 5px #b9a9ff;
+    font-weight: bold;
+  }
+  button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    background: linear-gradient(90deg, #a16eff, #5b2dfc);
+    color: white;
+    margin: 10px 5px 0;
+  }
+  button:hover {
+    background: linear-gradient(90deg, #5b2dfc, #a16eff);
+  }
+  #result {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <h2>🧪 Examen: Leyes de la Termodinámica</h2>
+    </div>
+    <div id="quiz"></div>
+    <div style="text-align:center;">
+      <button id="prevBtn" onclick="prevQuestion()">Anterior</button>
+      <button id="nextBtn" onclick="nextQuestion()">Siguiente</button>
+    </div>
+    <p id="result"></p>
+  </div>
+
+<script>
+const quizData = [
+  {
+    question: "¿Cuál es la rama de la física que se encarga del estudio del calor y la temperatura?",
+    options: ["Termodinámica", "Electromagnetismo", "Cinemática", "Óptica"],
+    correct: 0
+  },
+  {
+    question: "¿Qué es lo que se define como una porción específica de materia en la cual se centra la atención del intercambio de materia, energía y calor?",
+    options: ["Sistema", "Entorno", "Energía interna", "Presión"],
+    correct: 0
+  },
+  {
+    question: "¿Cuál es el sistema que no puede intercambiar masa ni energía con su entorno?",
+    options: ["Sistema aislado", "Sistema cerrado", "Sistema abierto", "Sistema térmico"],
+    correct: 0
+  },
+  {
+    question: "¿Qué ley establece que la energía no se crea ni se destruye?",
+    options: ["Primera Ley de la Termodinámica", "Segunda Ley de la Termodinámica", "Ley Cero de la Termodinámica", "Tercera Ley de la Termodinámica"],
+    correct: 0
+  },
+  {
+    question: "¿Cuál ley explica que la entropía de un sistema aislado siempre aumenta?",
+    options: ["Segunda Ley de la Termodinámica", "Primera Ley de la Termodinámica", "Ley Cero de la Termodinámica", "Tercera Ley de la Termodinámica"],
+    correct: 0
+  },
+  {
+    question: "¿Qué sucede con la entropía cuando un sistema se acerca al cero absoluto?",
+    options: ["Tiende a cero", "Aumenta", "Disminuye infinitamente", "Se vuelve negativa"],
+    correct: 0
+  },
+  {
+    question: "¿Qué permite la Ley Cero de la Termodinámica?",
+    options: ["Definir la temperatura y el equilibrio térmico", "Calcular la presión", "Determinar la energía cinética", "Predecir la entropía"],
+    correct: 0
+  },
+  {
+    question: "¿Qué magnitud física mide el grado de desorden en un sistema?",
+    options: ["Entropía", "Presión", "Temperatura", "Calor específico"],
+    correct: 0
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+const quiz = document.getElementById('quiz');
+const result = document.getElementById('result');
+
+function showQuestion(index) {
+  const q = quizData[index];
+  quiz.innerHTML = `
+    <div class="question"><b>${index + 1}. </b>${q.question}</div>
+    <div class="options">
+      ${q.options.map((opt, i) => `
+        <input type="radio" name="answer" id="opt${i}" value="${i}">
+        <label for="opt${i}">${opt}</label>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById("prevBtn").style.display = index === 0 ? "none" : "inline-block";
+  document.getElementById("nextBtn").innerText = index === quizData.length - 1 ? "Finalizar" : "Siguiente";
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="answer"]:checked');
+  if (!selected) {
+    alert("Por favor selecciona una respuesta antes de continuar.");
+    return;
+  }
+
+  if (parseInt(selected.value) === quizData[currentQuestion].correct) score++;
+  currentQuestion++;
+
+  if (currentQuestion < quizData.length) {
+    showQuestion(currentQuestion);
+  } else {
+    quiz.innerHTML = "";
+    document.getElementById("prevBtn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "none";
+    result.innerHTML = `✅ Has obtenido <b>${score}</b> de <b>${quizData.length}</b> respuestas correctas.`;
+  }
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    showQuestion(currentQuestion);
+  }
+}
+
+// 👇 Llamamos a la función para mostrar la primera pregunta inmediatamente
+document.addEventListener("DOMContentLoaded", () => {
+  showQuestion(currentQuestion);
+});
+</script>
+</body>
+</html>
